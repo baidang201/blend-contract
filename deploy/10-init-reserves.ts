@@ -54,6 +54,29 @@ const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnviro
   const { deployer } = await getNamedAccounts();
   console.log("deployer: ", deployer);
   
+    // 添加调试日志
+    console.log("=== Debug init-reserves ===");
+    const allDeployments = await deployments.all();
+    console.log("Available deployments:", Object.keys(allDeployments));
+    
+    // 获取所有已部署的TestnetERC20合约
+    const testnetTokens = Object.entries(allDeployments).filter(([name, deployment]) => {
+      return deployment.abi && deployment.abi.some(item => 
+        item.type === 'constructor' && item.inputs && 
+        item.inputs.some(input => input.name === 'symbol')
+      );
+    });
+    
+    console.log("Found TestnetERC20 tokens:", testnetTokens.map(([name]) => name));
+    
+    // 尝试获取特定资产
+    try {
+      const usdt = await getDeployedContract("TestnetERC20", "USDT");
+      console.log("USDT contract found at:", usdt.target);
+    } catch (error) {
+      console.log("Failed to find USDT contract:", error);
+    }
+
   const network = (
     process.env.FORK ? process.env.FORK : hre.network.name
   ) as eNetwork;
@@ -133,7 +156,7 @@ const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnviro
   if (reservesAssets === undefined) {
     throw Error("Reserve assets not found");
   }
-  if (network === eEthereumNetwork.hardhat || network === eBevmNetwork.testnet) {
+  if (network === eEthereumNetwork.hardhat || network === eBevmNetwork.testnet || network === eEthereumNetwork.localhost) {
     for (const asset in reservesAssets) {
       if (reservesAssets[asset] === ZERO_ADDRESS) {
         reservesAssets[asset] = (await deployments.get(asset)).address;
@@ -200,7 +223,7 @@ const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnviro
 
   for (let [symbol, params] of reserves) {
     let tokenAddress : string;
-    if (network === eEthereumNetwork.hardhat || network === eBevmNetwork.testnet) {
+    if (network === eEthereumNetwork.hardhat || network === eBevmNetwork.testnet || network === eEthereumNetwork.localhost) {
       tokenAddress = (await hre.deployments.get(symbol)).address;
     } else {
       tokenAddress = reservesAssets[symbol];

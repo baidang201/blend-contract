@@ -25,7 +25,6 @@ export type eNetwork =
 
 type eTenderlyNetwork = "tenderly";
 
-
 export enum eBevmNetwork {
   main = "bevm",
   testnet = "bevm_testnet",
@@ -58,6 +57,7 @@ export enum eEthereumNetwork {
   rinkeby = "rinkeby",
   goerli = "goerli",
   sepolia = "sepolia",
+  localhost = "localhost",
 }
 
 export enum eBaseNetwork {

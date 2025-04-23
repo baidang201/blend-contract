@@ -36,7 +36,7 @@ export const getMockRWA = (name: string) => {
 };
 
 export const getWethAddress = async () => {
-  if (hre.network.name === eEthereumNetwork.hardhat || hre.network.name === eBevmNetwork.testnet || hre.network.name === 'localhost') {
+  if (hre.network.name === eEthereumNetwork.hardhat || hre.network.name === eBevmNetwork.testnet || hre.network.name === eEthereumNetwork.localhost) {
     return (await deployments.get("WBTC")).address;
   } else {
     return getAddress("wbtc");

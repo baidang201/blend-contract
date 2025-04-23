@@ -54,6 +54,14 @@ export const BlendMarket: IBlendConfiguration = {
       WBTC: ZERO_ADDRESS,
       BLEND: ZERO_ADDRESS,
     },
+    [eEthereumNetwork.localhost]: {
+      USDT: ZERO_ADDRESS,
+      DAI: ZERO_ADDRESS,
+      USDC: ZERO_ADDRESS,
+      WETH: ZERO_ADDRESS,
+      WBTC: ZERO_ADDRESS,
+      BLEND: ZERO_ADDRESS,
+    },
     [eBevmNetwork.testnet]: {
       USDT: ZERO_ADDRESS,
       DAI: ZERO_ADDRESS,
