@@ -1,5 +1,6 @@
 import { HardhatRuntimeEnvironment } from "hardhat/types";
 import { DeployFunction } from "hardhat-deploy/types";
+import { ethers } from "hardhat";
 
 import { config } from "dotenv";
 import { getBaseURI, getDeployedContract, getDeployedContractWithDefaultName } from "../utils/env-utils";
@@ -23,7 +24,7 @@ const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnviro
     process.env.FORK ? process.env.FORK : hre.network.name
   ) as eNetwork;
 
-  if (network != eEthereumNetwork.hardhat && network != eBevmNetwork.testnet) {
+  if (network != eEthereumNetwork.hardhat && network != eBevmNetwork.testnet && network != 'localhost') {
     console.log(
       "[Deployment] Skipping testnet token setup at production market"
     );
@@ -63,8 +64,14 @@ const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnviro
           poolConfig.WrappedNativeTokenSymbol,
           faucet.target,
         ],
-      }).then((res) => {
+      }).then(async (res) => {
         console.log("WBTC deployed to: %s, %s", res.address, res.newlyDeployed);
+
+        let tx = await faucet.mint( res.address, deployer, "10000000000");
+        await tx.wait().then(() => {
+          console.log("       @@@mint to deployer done!", res.address,  );
+        });
+
       });
       continue;
     }
@@ -77,8 +84,14 @@ const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnviro
         reservesConfig[token].reserveDecimals, 
         faucet.target
       ],
-    }).then((res) => {
+    }).then(async (res) => {
       console.log("%s deployed to: %s, %s", token, res.address, res.newlyDeployed);
+
+      let tx = await faucet.mint( res.address, deployer, ethers.parseUnits("10", Number(reservesConfig[token].reserveDecimals)).toString());
+      await tx.wait().then(() => {
+        console.log("       @@@mint to deployer done!", res.address,  );
+      });
+
     });
   }
 

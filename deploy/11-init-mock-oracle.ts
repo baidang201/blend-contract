@@ -24,7 +24,7 @@ const deployFunction: DeployFunction = async function (hre: HardhatRuntimeEnviro
     process.env.FORK ? process.env.FORK : hre.network.name
   ) as eNetwork;
 
-  if (network != eEthereumNetwork.hardhat && network != eBevmNetwork.testnet) {
+  if (network != eEthereumNetwork.hardhat && network != eBevmNetwork.testnet && network != 'localhost') {
     console.log(
       "[Deployment] Skipping testnet token setup at production market"
     );

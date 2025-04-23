@@ -6,14 +6,14 @@ config({ path: "../.env" });
 export const getAddress = (name: string) => {
   const configName = name.toUpperCase() + "_" + hre.network.name.toUpperCase();
   const address = process.env[configName];
-  console.log("Get address for %s: %s", configName, address);
+  console.trace("@@1 getaddress Get address for %s: %s", configName, address);
   return address || "";
 };
 
 export const getMockPunks = () => {
   const configName = "PUNKS_MOCK_" + hre.network.name.toUpperCase();
   const address = process.env[configName];
-  console.log("Get address for %s: %s", configName, address);
+  console.log("@@2 punks Get address for %s: %s", configName, address);
   return address || "";
 };
 
@@ -23,7 +23,7 @@ export const getMockUSDC = async () => {
   } else {
     const configName = "USDC_MOCK_" + hre.network.name.toUpperCase();
     const address = process.env[configName];
-    console.log("Get address for %s: %s", configName, address);
+    console.log("@@3 usdc Get address for %s: %s", configName, address);
     return address || "";
   }
 };
@@ -31,12 +31,12 @@ export const getMockUSDC = async () => {
 export const getMockRWA = (name: string) => {
   const configName = name.toUpperCase() + "_" + hre.network.name.toUpperCase();
   const address = process.env[configName];
-  console.log("Get address for %s: %s", configName, address);
+  console.log("@@4 rwa Get address for %s: %s", configName, address);
   return address || "";
 };
 
 export const getWethAddress = async () => {
-  if (hre.network.name === eEthereumNetwork.hardhat || hre.network.name === eBevmNetwork.testnet) {
+  if (hre.network.name === eEthereumNetwork.hardhat || hre.network.name === eBevmNetwork.testnet || hre.network.name === 'localhost') {
     return (await deployments.get("WBTC")).address;
   } else {
     return getAddress("wbtc");
